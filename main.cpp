@@ -14,62 +14,60 @@
 
 using namespace std;
 
-int num[100000];
-void quicksort(int low, int high);
-int partition(int low, int high);  ///// 파티션을 나눔
-int choosePivot(int low, int high); ////// 피봇 선택
-void swap(int &x, int &y);
+int a[100000];
+int b[100000];
 
-int main() {
-    
+void sort(int start, int end);
+void merge(int start, int end);
+int main(){
     int n;
     
-    scanf("%d",&n);
+    scanf("%d", &n);
+    
+    for(int i=0; i<n; i++){
+        scanf("%d",&a[i]);
+    }
+    
+    sort(0,n-1);
     
     for(int i=0; i<n; i++)
-        scanf("%d",&num[i]);
-    
-    quicksort(0, n-1);
+        printf("%d\n",a[i]);
     
     return 0;
 }
 
-void quicksort(int low, int high){
-    if(low<high){
-        int pivot = partition(low, high);
-        quicksort(low, pivot-1);
-        quicksort(pivot+1,high);
+void sort(int start, int end){
+    if(start == end){
+        return;
     }
+    
+    int mid = (start+end)/2;
+    
+    sort(start,mid);
+    sort(mid+1,end);
+    merge(start,end);
 }
 
-int partition(int low, int high){
+void merge(int start, int end){
+    int mid = (start+end)/2;
+    int i = start;
+    int j = mid+1;
+    int k=0;
     
-    int pivotIndex = choosePivot(low, high);
-    int pivotValue = num[pivotIndex];
-    
-    swap(num[pivotIndex],num[high]);
-    
-    int storeIndex = low;
-    
-    for(int i= low; i<high;i++){
-        if( num[i] < pivotValue){
-            swap(num[i], num[storeIndex]);
-            storeIndex +=1;
+    while(i<=mid&&j<=end){
+        if(a[i]<=a[j]){
+            b[k++] =a[i++];
+        }else{
+            b[k++]=a[j++];
         }
     }
-    
-    swap(num[storeIndex], num[high]);
-    return storeIndex;
+    while(i<=mid){
+        b[k++] = a[i++];
+    }
+    while(j<=end){
+        b[k++]=a[j++];
+    }
+    for(int i = start; i<=end; i++){
+        a[i] = b[i-start];
+    }
 }
-
-int choosePivot(int low, int high){
-    
-    return low + (high - low)/2;
-}
-
-void swap(int &x, int &y){
-    int tmp = x;
-    x = y;
-    y = tmp;
-}
-
